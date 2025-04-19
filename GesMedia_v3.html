@@ -366,45 +366,6 @@
     </div>
 </div>
 
-<!-- Portfolio 
-<section id="portfolio" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Portafolio</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card service-card h-100">
-                    <img src="https://source.unsplash.com/random/300x200/?software" class="card-img-top" alt="Proyecto 1">
-                    <div class="card-body text-center">
-                        <h3 class="card-title mt-3">Sistema de Gestión Empresarial</h3>
-                        <p class="card-text">Desarrollo de una aplicación web personalizada para optimizar procesos internos de una empresa de logística.</p>
-                        <a href="#" class="btn btn-primary">Ver Proyecto</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card service-card h-100">
-                    <img src="https://source.unsplash.com/random/300x200/?website" class="card-img-top" alt="Proyecto 2">
-                    <div class="card-body text-center">
-                        <h3 class="card-title mt-3">Sitio Web Corporativo</h3>
-                        <p class="card-text">Creación de un sitio web responsivo y optimizado para SEO para una consultora financiera.</p>
-                        <a href="#" class="btn btn-primary">Ver Proyecto</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card service-card h-100">
-                    <img src="https://source.unsplash.com/random/300x200/?data" class="card-img-top" alt="Proyecto 3">
-                    <div class="card-body text-center">
-                        <h3 class="card-title mt-3">Análisis de Datos</h3>
-                        <p class="card-text">Implementación de un dashboard interactivo para visualización de datos de ventas en tiempo real.</p>
-                        <a href="#" class="btn btn-primary">Ver Proyecto</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
--->
 <!-- Testimonios -->
 <section id="testimonios" class="py-5 bg-light">
     <div class="container">
@@ -485,7 +446,7 @@
         event.preventDefault(); // Prevenir recarga de página
 
         // Obtener los valores del formulario
-        const form = event.target; // Captura el formulario completo
+        const form = event.target;
         const nombre = document.getElementById('nombre').value;
         const email = document.getElementById('email').value;
         const mensaje = document.getElementById('mensaje').value;
@@ -529,7 +490,7 @@
             });
     });
 
-    // Cerrar el menú y desplazar suavemente a la sección
+    // Manejo de navegación y historial
     document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault(); // Evitar el salto brusco por defecto
@@ -542,16 +503,64 @@
                 new bootstrap.Collapse(navbarCollapse).hide();
             }
 
-            // Desplazar suavemente con offset para la navbar
+            // Desplazar suavemente y actualizar historial
             if (targetElement) {
                 const navbarHeight = document.querySelector('.navbar').offsetHeight;
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10; // Margen adicional
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                // Actualizar historial sin recargar
+                history.pushState({ section: targetId }, '', `#${targetId}`);
+            }
+        });
+    });
+
+    // Manejar el botón "Atrás"
+    window.addEventListener('popstate', (event) => {
+        const state = event.state;
+        if (state && state.section) {
+            const targetElement = document.getElementById(state.section);
+            if (targetElement) {
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
                 });
             }
-        });
+        } else {
+            // Si no hay estado, ir al inicio
+            const inicioElement = document.getElementById('inicio');
+            if (inicioElement) {
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = inicioElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    });
+
+    // Inicializar el historial en la carga inicial
+    window.addEventListener('load', () => {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetElement = document.getElementById(hash);
+            if (targetElement) {
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                history.replaceState({ section: hash }, '', `#${hash}`);
+            }
+        } else {
+            history.replaceState({ section: 'inicio' }, '', '#inicio');
+        }
     });
 </script>
 
